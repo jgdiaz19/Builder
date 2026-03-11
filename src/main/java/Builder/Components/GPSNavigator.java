@@ -4,7 +4,7 @@ package Builder.Components;
  * Componente del auto: navegador GPS.
  */
 public class GPSNavigator {
-    private String route;
+    private final String route;
 
     public GPSNavigator() {
         this.route = "Ruta predeterminada: centro de la ciudad -> destino principal";
