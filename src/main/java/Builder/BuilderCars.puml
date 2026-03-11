@@ -1,0 +1,190 @@
+@startuml
+title Patrón Builder - Construcción de autos en Java
+
+left to right direction
+skinparam shadowing false
+skinparam classAttributeIconSize 0
+skinparam packageStyle rectangle
+skinparam linetype ortho
+
+skinparam stereotypeCBackgroundColor #EAEAEA
+skinparam stereotypeCBorderColor #555555
+
+package "Aplicación" {
+
+    class ConsoleApp <<Cliente>> {
+        +main(args: String[]): void
+        -mostrarMenu(): void
+        -construirAutoDeportivo(director: Director): void
+        -construirAutoUrbano(director: Director): void
+        -construirSUV(director: Director): void
+    }
+}
+
+package "Constructores" {
+
+    interface Builder <<Builder>> {
+        +setCarType(type: CarType): void
+        +setSeats(seats: int): void
+        +setEngine(engine: Engine): void
+        +setTransmission(transmission: Transmission): void
+        +setTripComputer(tripComputer: TripComputer): void
+        +setGPSNavigator(gpsNavigator: GPSNavigator): void
+    }
+
+    class CarBuilder <<ConcreteBuilder>> {
+        -type: CarType
+        -seats: int
+        -engine: Engine
+        -transmission: Transmission
+        -tripComputer: TripComputer
+        -gpsNavigator: GPSNavigator
+        +setCarType(type: CarType): void
+        +setSeats(seats: int): void
+        +setEngine(engine: Engine): void
+        +setTransmission(transmission: Transmission): void
+        +setTripComputer(tripComputer: TripComputer): void
+        +setGPSNavigator(gpsNavigator: GPSNavigator): void
+        +getResult(): Car
+    }
+
+    class CarManualBuilder <<ConcreteBuilder>> {
+        -type: CarType
+        -seats: int
+        -engine: Engine
+        -transmission: Transmission
+        -tripComputer: TripComputer
+        -gpsNavigator: GPSNavigator
+        +setCarType(type: CarType): void
+        +setSeats(seats: int): void
+        +setEngine(engine: Engine): void
+        +setTransmission(transmission: Transmission): void
+        +setTripComputer(tripComputer: TripComputer): void
+        +setGPSNavigator(gpsNavigator: GPSNavigator): void
+        +getResult(): Manual
+    }
+}
+
+package "Director" {
+
+    class Director <<Director>> {
+        +constructSportsCar(builder: Builder): void
+        +constructCityCar(builder: Builder): void
+        +constructSUV(builder: Builder): void
+    }
+}
+
+package "Productos" {
+
+    enum CarType <<Enumeración>> {
+        CITY_CAR
+        SPORTS_CAR
+        SUV
+    }
+
+    class Car <<Producto>> {
+        -carType: CarType
+        -seats: int
+        -engine: Engine
+        -transmission: Transmission
+        -tripComputer: TripComputer
+        -gpsNavigator: GPSNavigator
+        -fuel: double
+        +Car(carType: CarType, seats: int, engine: Engine, transmission: Transmission, tripComputer: TripComputer, gpsNavigator: GPSNavigator)
+        +getCarType(): CarType
+        +getSeats(): int
+        +getEngine(): Engine
+        +getTransmission(): Transmission
+        +getTripComputer(): TripComputer
+        +getGpsNavigator(): GPSNavigator
+        +getFuel(): double
+        +setFuel(fuel: double): void
+        +toString(): String
+    }
+
+    class Manual <<Producto>> {
+        -carType: CarType
+        -seats: int
+        -engine: Engine
+        -transmission: Transmission
+        -tripComputer: TripComputer
+        -gpsNavigator: GPSNavigator
+        +Manual(carType: CarType, seats: int, engine: Engine, transmission: Transmission, tripComputer: TripComputer, gpsNavigator: GPSNavigator)
+        +print(): String
+    }
+}
+
+package "Componentes" {
+
+    class Engine <<Componente>> {
+        -volume: double
+        -mileage: double
+        -started: boolean
+        +Engine(volume: double, mileage: double)
+        +on(): void
+        +off(): void
+        +isStarted(): boolean
+        +go(mileage: double): void
+        +getVolume(): double
+        +getMileage(): double
+        +toString(): String
+    }
+
+    class GPSNavigator <<Componente>> {
+        -route: String
+        +GPSNavigator()
+        +GPSNavigator(route: String)
+        +getRoute(): String
+        +toString(): String
+    }
+
+    enum Transmission <<Enumeración>> {
+        SINGLE_SPEED
+        MANUAL
+        AUTOMATIC
+        SEMI_AUTOMATIC
+    }
+
+    class TripComputer <<Componente>> {
+        -car: Car
+        +setCar(car: Car): void
+        +showFuelLevel(): void
+        +showStatus(): void
+    }
+}
+
+' =========================
+' Relaciones principales
+' =========================
+
+Builder <|.. CarBuilder
+Builder <|.. CarManualBuilder
+
+Director ..> Builder : dirige la construcción
+ConsoleApp ..> Director : utiliza
+ConsoleApp ..> CarBuilder : instancia
+ConsoleApp ..> CarManualBuilder : instancia
+
+CarBuilder ..> Car : construye
+CarManualBuilder ..> Manual : construye
+
+' =========================
+' Relaciones de producto
+' =========================
+
+Car --> CarType
+Car --> Engine
+Car --> Transmission
+Car --> TripComputer
+Car --> GPSNavigator
+
+Manual --> CarType
+Manual --> Engine
+Manual --> Transmission
+Manual --> TripComputer
+Manual --> GPSNavigator
+
+TripComputer --> Car
+
+}
+@enduml
